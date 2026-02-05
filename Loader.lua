@@ -5,13 +5,13 @@ local success, result = pcall(function()
     local scriptFunction = loadstring(scriptContent)
     
     if scriptFunction then
-        print("Script loaded successfully!")
+        print("Script loaded!")
         scriptFunction()()
     else
-        warn("Cannot load script!")
+        warn("Cannot load script")
     end
 end)
 
 if not success then
-    warn("Error loading script: " .. tostring(result))
+    warn("Error: " .. tostring(result))
 end
