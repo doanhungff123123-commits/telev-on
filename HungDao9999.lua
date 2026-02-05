@@ -1,5 +1,3 @@
--- HungDao9999 | Bay Thẳng + Xuyên Tường + Instant Pickup (2 NÚT: ĐI/VỀ)
--- ĐÃ SỬA: Tương thích Loader.lua + Tắt hoàn toàn + Chặn Robux
 
 return function()
 	local Players = game:GetService("Players")
