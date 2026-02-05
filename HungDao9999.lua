@@ -1,4 +1,3 @@
-
 return function()
 	local Players = game:GetService("Players")
 	local RunService = game:GetService("RunService")
@@ -7,14 +6,12 @@ return function()
 	local player = Players.LocalPlayer
 	local PlayerGui = player:WaitForChild("PlayerGui")
 
-	-- Kiểm tra nếu GUI đã tồn tại thì xóa (tránh duplicate)
 	if PlayerGui:FindFirstChild("HungDaoFlyGUI") then
 		PlayerGui.HungDaoFlyGUI:Destroy()
-		warn("⚠️ Đã xóa GUI cũ")
+		warn("Da xoa GUI cu")
 		task.wait(0.5)
 	end
 
-	-- ====== CONFIG ======
 	local SPEED = 500
 	local POINTS_GO = {
 		Vector3.new(147, 3.38, -138),
@@ -28,17 +25,14 @@ return function()
 	}
 	local arrivalThreshold = 5
 
-	-- ====== STATE ======
 	local ENABLED = false
 	local flyConn, noclipConn, promptConn, robuxPromptConn
 
-	-- ====== CHARACTER ======
 	local function getChar()
 		local c = player.Character or player.CharacterAdded:Wait()
 		return c, c:WaitForChild("HumanoidRootPart"), c:WaitForChild("Humanoid")
 	end
 
-	-- ====== TẮT CÁC PROMPT ROBUX TỰ ĐỘNG ======
 	local function blockRobuxPrompts()
 		if robuxPromptConn then robuxPromptConn:Disconnect() end
 		
@@ -92,7 +86,6 @@ return function()
 		end
 	end
 
-	-- ====== NOCLIP LIÊN TỤC ======
 	local function enableNoclip(char)
 		if noclipConn then noclipConn:Disconnect() end
 		noclipConn = RunService.Stepped:Connect(function()
@@ -125,13 +118,12 @@ return function()
 		end
 	end
 
-	-- ====== BAY THẲNG BẰNG CFRAME ======
 	local function flyDirectTo(hrp, targetPos)
 		if not hrp or not hrp.Parent or not ENABLED then
 			return false
 		end
 		
-		print("🎯 Flying to: " .. tostring(targetPos))
+		print("Flying to: " .. tostring(targetPos))
 		
 		local startTime = tick()
 		local timeout = 120
@@ -179,7 +171,6 @@ return function()
 		return completed
 	end
 
-	-- ====== INSTANT PICKUP (TỰ ĐỘNG ẤN E) ======
 	local function enableInstantPickup()
 		if promptConn then promptConn:Disconnect() end
 		promptConn = ProximityPromptService.PromptShown:Connect(function(p)
@@ -206,9 +197,8 @@ return function()
 		end
 	end
 
-	-- ====== STOP & CLEANUP ======
 	local function stopAndCleanup()
-		print("🛑 BẮT ĐẦU TẮT HOÀN TOÀN...")
+		print("BAT DAU TAT HOAN TOAN...")
 		ENABLED = false
 		
 		if flyConn then 
@@ -218,12 +208,12 @@ return function()
 		
 		local success, char, hrp, hum = pcall(getChar)
 		if not success or not char then
-			print("⚠️ Không tìm thấy character")
+			print("Khong tim thay character")
 			return
 		end
 		
 		disableNoclip(char)
-		print("🔒 Đã tắt noclip")
+		print("Da tat noclip")
 		
 		workspace.Gravity = 196.2
 		
@@ -260,10 +250,9 @@ return function()
 		disableInstantPickup()
 		unblockRobuxPrompts()
 		
-		print("✅ ĐÃ TẮT HOÀN TOÀN - CÓ THỂ DI CHUYỂN BÌNH THƯỜNG")
+		print("DA TAT HOAN TOAN - CO THE DI CHUYEN BINH THUONG")
 	end
 
-	-- ====== MAIN LOGIC ======
 	local function run(points, direction)
 		local char, hrp, hum = getChar()
 		
@@ -274,30 +263,29 @@ return function()
 		workspace.Gravity = 0
 		hum:ChangeState(Enum.HumanoidStateType.Physics)
 		
-		print("🚀 Bắt đầu bay " .. direction .. "...")
+		print("Bat dau bay " .. direction .. "...")
 		
 		for i, pos in ipairs(points) do
 			if not ENABLED then break end
 			
-			print("=== Điểm " .. i .. "/" .. #points .. " ===")
+			print("=== Diem " .. i .. "/" .. #points .. " ===")
 			local success = flyDirectTo(hrp, pos)
 			
 			if not success then
-				print("❌ Thất bại tại điểm " .. i)
+				print("That bai tai diem " .. i)
 				break
 			end
 			
-			print("✅ Đã đến điểm " .. i)
+			print("Da den diem " .. i)
 			task.wait(0.3)
 		end
 		
 		if ENABLED then
-			print("✅ Hoàn thành bay " .. direction .. "!")
+			print("Hoan thanh bay " .. direction .. "!")
 			stopAndCleanup()
 		end
 	end
 
-	-- ====== GUI 2 NÚT ======
 	local gui = Instance.new("ScreenGui", PlayerGui)
 	gui.ResetOnSpawn = false
 	gui.Name = "HungDaoFlyGUI"
@@ -317,7 +305,6 @@ return function()
 	stroke.Color = Color3.fromRGB(255, 255, 255)
 	stroke.Thickness = 2
 
-	-- NÚT ĐI
 	local btnGo = Instance.new("TextButton", frame)
 	btnGo.Size = UDim2.new(0.42, 0, 0.5, 0)
 	btnGo.Position = UDim2.new(0.05, 0, 0.35, 0)
@@ -325,7 +312,7 @@ return function()
 	btnGo.TextSize = 18
 	btnGo.TextColor3 = Color3.new(1, 1, 1)
 	btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btnGo.Text = "ĐI"
+	btnGo.Text = "DI"
 	btnGo.BorderSizePixel = 0
 
 	local btnGoCorner = Instance.new("UICorner", btnGo)
@@ -335,7 +322,6 @@ return function()
 	btnGoStroke.Color = Color3.fromRGB(255, 255, 255)
 	btnGoStroke.Thickness = 1
 
-	-- NÚT VỀ
 	local btnBack = Instance.new("TextButton", frame)
 	btnBack.Size = UDim2.new(0.42, 0, 0.5, 0)
 	btnBack.Position = UDim2.new(0.53, 0, 0.35, 0)
@@ -343,7 +329,7 @@ return function()
 	btnBack.TextSize = 18
 	btnBack.TextColor3 = Color3.new(1, 1, 1)
 	btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btnBack.Text = "VỀ"
+	btnBack.Text = "VE"
 	btnBack.BorderSizePixel = 0
 
 	local btnBackCorner = Instance.new("UICorner", btnBack)
@@ -353,7 +339,6 @@ return function()
 	btnBackStroke.Color = Color3.fromRGB(255, 255, 255)
 	btnBackStroke.Thickness = 1
 
-	-- LABEL TRẠNG THÁI
 	local label = Instance.new("TextLabel", frame)
 	label.Size = UDim2.new(0.9, 0, 0.2, 0)
 	label.Position = UDim2.new(0.05, 0, 0.05, 0)
@@ -361,70 +346,67 @@ return function()
 	label.TextSize = 14
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.BackgroundTransparency = 1
-	label.Text = "SẴN SÀNG"
+	label.Text = "SAN SANG"
 
-	-- LOGIC NÚT ĐI
 	btnGo.MouseButton1Click:Connect(function()
 		if ENABLED then
 			stopAndCleanup()
 			btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 			btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			label.Text = "ĐÃ TẮT"
+			label.Text = "DA TAT"
 			task.wait(1)
-			label.Text = "SẴN SÀNG"
+			label.Text = "SAN SANG"
 			return
 		end
 		
 		ENABLED = true
 		btnGo.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 		btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-		label.Text = "ĐANG BAY ĐI..."
+		label.Text = "DANG BAY DI..."
 		
 		task.spawn(function()
-			run(POINTS_GO, "ĐI")
+			run(POINTS_GO, "DI")
 			btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			label.Text = "HOÀN THÀNH"
+			label.Text = "HOAN THANH"
 			task.wait(1)
-			label.Text = "SẴN SÀNG"
+			label.Text = "SAN SANG"
 		end)
 	end)
 
-	-- LOGIC NÚT VỀ
 	btnBack.MouseButton1Click:Connect(function()
 		if ENABLED then
 			stopAndCleanup()
 			btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 			btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			label.Text = "ĐÃ TẮT"
+			label.Text = "DA TAT"
 			task.wait(1)
-			label.Text = "SẴN SÀNG"
+			label.Text = "SAN SANG"
 			return
 		end
 		
 		ENABLED = true
 		btnBack.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
 		btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-		label.Text = "ĐANG BAY VỀ..."
+		label.Text = "DANG BAY VE..."
 		
 		task.spawn(function()
-			run(POINTS_BACK, "VỀ")
+			run(POINTS_BACK, "VE")
 			btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			label.Text = "HOÀN THÀNH"
+			label.Text = "HOAN THANH"
 			task.wait(1)
-			label.Text = "SẴN SÀNG"
+			label.Text = "SAN SANG"
 		end)
 	end)
 
-	-- XỬ LÝ RESPAWN
 	player.CharacterAdded:Connect(function()
 		if ENABLED then
 			task.wait(1)
 			stopAndCleanup()
 			btnGo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 			btnBack.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			label.Text = "SẴN SÀNG"
+			label.Text = "SAN SANG"
 		end
 	end)
 
-	print("🌟 HungDao9999 Script Loaded! (Loader Compatible) 🌟")
+	print("HungDao9999 Script Loaded!")
 end
